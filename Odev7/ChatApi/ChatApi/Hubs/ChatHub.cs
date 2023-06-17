@@ -21,10 +21,11 @@ public class ChatHub : Hub
         await base.OnDisconnectedAsync(exception);
     }
 
-    public async Task JoinChatRoom(string roomId)
+    public async Task JoinChatRoom(string userName)
     {
-        await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
-        await Clients.Group(roomId).SendAsync("ReceiveMessage", "Sistem", $"{Context.ConnectionId} sohbet odasına katıldı.");
+       Users.Add(userName);
+
+        await Clients.AllExcept(Context.ConnectionId).SendAsync("NewUserJoined", userName);
     }
 
     public List<string> GetAllUsers()
